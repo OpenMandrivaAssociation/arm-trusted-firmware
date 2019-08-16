@@ -24,6 +24,7 @@ ExclusiveArch: aarch64
 BuildRequires: dtc
 BuildRequires: gcc
 BuildRequires: cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
+BuildRequires: cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
