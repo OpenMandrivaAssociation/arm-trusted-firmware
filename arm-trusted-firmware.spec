@@ -52,14 +52,9 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
-sed -i 's/arm-none-eabi-/arm-linux-gnu-/' plat/rockchip/rk3399/drivers/m0/Makefile
+sed -i 's/arm-none-eabi-//' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
-%if 0%{?rhel} == 7
-#Enabling DTS for .el7
-%{?enable_devtoolset7:%{enable_devtoolset7}}
-%endif
-
 %ifarch aarch64
 for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
@@ -68,9 +63,7 @@ make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
 %endif
 
-
 %install
-
 mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
