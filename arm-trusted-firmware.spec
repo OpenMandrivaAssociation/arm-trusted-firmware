@@ -23,6 +23,7 @@ ExclusiveArch: aarch64
 
 BuildRequires: dtc
 BuildRequires: gcc
+BuildRequires: cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -52,7 +53,7 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
-sed -i 's/arm-none-eabi-//' plat/rockchip/rk3399/drivers/m0/Makefile
+sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
 %ifarch aarch64
