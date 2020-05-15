@@ -6,8 +6,8 @@
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.1
-Release: 2%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
+Version: 2.3
+Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
 URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
