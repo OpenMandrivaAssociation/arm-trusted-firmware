@@ -6,7 +6,7 @@
 %global debug_package %{nil}
 
 Name:    arm-trusted-firmware
-Version: 2.3
+Version: 2.4
 Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
 Summary: ARM Trusted Firmware
 License: BSD
@@ -19,7 +19,7 @@ Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{versio
 %endif
 
 # At the moment we're only building on aarch64
-ExclusiveArch: aarch64
+ExclusiveArch: %{aarch64}
 
 BuildRequires: dtc
 BuildRequires: gcc
@@ -81,7 +81,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  done
 done
 
-# Rockchips wants the bl31.elf, plus rk3399 wants power management co-processor bits
+# Rockchips want the bl31.elf, plus rk3399 wants power management co-processor bits
 for soc in rk3399 rk3368 rk3328
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
@@ -95,9 +95,7 @@ done
 
 %endif
 
-%ifarch aarch64
 %files -n arm-trusted-firmware-armv8
 %license license.rst
 %doc readme.rst
 %{_datadir}/%{name}
-%endif
