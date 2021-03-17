@@ -36,7 +36,7 @@ Note: the contents of this package are generally just consumed by bootloaders
 such as u-boot. As such the binaries aren't of general interest to users.
 
 %ifarch aarch64
-%package     -n arm-trusted-firmware-armv8
+%package -n arm-trusted-firmware-armv8
 Summary:     ARM Trusted Firmware for ARMv8-A
 
 %description -n arm-trusted-firmware-armv8
@@ -61,7 +61,7 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/driver
 for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+make HOSTCC="gcc %{optflags}" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
 %endif
 
@@ -95,7 +95,9 @@ done
 
 %endif
 
+%ifarch aarch64
 %files -n arm-trusted-firmware-armv8
 %license license.rst
 %doc readme.rst
 %{_datadir}/%{name}
+%endif
