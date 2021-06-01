@@ -1,30 +1,22 @@
-#global candidate rc1
-# ./make-git-snapshot.sh
-#global snapshot 20190209
-
 # Binaries not used in standard manner so debuginfo is useless
 %global debug_package %{nil}
 
-Name:    arm-trusted-firmware
-Version: 2.4
-Release: 1%{?candidate:.%{candidate}}%{?snapshot:.%{snapshot}}%{?dist}
-Summary: ARM Trusted Firmware
-License: BSD
-URL:     https://github.com/ARM-software/arm-trusted-firmware/wiki
-
-%if 0%{?snapshot}
-Source0:  arm-trusted-firmware-%{snapshot}.tar.xz
-%else
-Source0:  https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}%{?candidate:-%{candidate}}.tar.gz
-%endif
-
+Name:		arm-trusted-firmware
+Version:	2.5
+Release:	1
+Summary:	ARM Trusted Firmware
+License:	BSD
+Group:		Development/C
+URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
+Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+Patch0:		https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
 # At the moment we're only building on aarch64
-ExclusiveArch: %{aarch64}
+ExclusiveArch:	%{aarch64}
 
-BuildRequires: dtc
-BuildRequires: gcc
-BuildRequires: cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
-BuildRequires: cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
+BuildRequires:	dtc
+BuildRequires:	gcc
+BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
+BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -36,8 +28,9 @@ Note: the contents of this package are generally just consumed by bootloaders
 such as u-boot. As such the binaries aren't of general interest to users.
 
 %ifarch aarch64
-%package     -n arm-trusted-firmware-armv8
-Summary:     ARM Trusted Firmware for ARMv8-A
+%package -n arm-trusted-firmware-armv8
+Summary:	ARM Trusted Firmware for ARMv8-A
+Group:		Development/C
 
 %description -n arm-trusted-firmware-armv8
 ARM Trusted Firmware binaries for various  ARMv8-A SoCs.
@@ -47,11 +40,7 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-%if 0%{?snapshot}
-%autosetup -n %{name}-%{snapshot}
-%else
-%autosetup -n %{name}-%{version}%{?candidate:-%{candidate}}
-%endif
+%autosetup -p1
 
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/drivers/m0/Makefile
@@ -61,7 +50,7 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/driver
 for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
 do
 # At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+make HOSTCC="gcc %{optflags}" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
 %endif
 
@@ -95,7 +84,9 @@ done
 
 %endif
 
+%ifarch aarch64
 %files -n arm-trusted-firmware-armv8
 %license license.rst
 %doc readme.rst
 %{_datadir}/%{name}
+%endif
