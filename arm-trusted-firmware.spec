@@ -3,13 +3,15 @@
 
 Name:		arm-trusted-firmware
 Version:	2.5
-Release:	1
+Release:	2
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
 URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
 Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
-Patch0:		https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/0001-rockchip-rk3399-fix-dram-section-placement-declarati.patch
+Patch0:		0001-fix-rk3399-suspend-correct-LPDDR4-resume-sequence.patch
+Patch1:		0002-fix-rockchip-rk3399-fix-dram-section-placement.patch
+
 # At the moment we're only building on aarch64
 ExclusiveArch:	%{aarch64}
 
