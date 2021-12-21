@@ -47,7 +47,7 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/driver
 
 %build
 %ifarch aarch64
-for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 sun50i_a64 sun50i_h6 zynqmp
+for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 rpi4 sun50i_a64 sun50i_h6
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc %{optflags}" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
