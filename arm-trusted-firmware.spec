@@ -2,14 +2,14 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.6
+Version:	2.7
 Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
 URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
 Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
-
+Source1:	https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/aarch64-bl31
 # At the moment we're only building on aarch64
 ExclusiveArch:	%{aarch64}
 
@@ -42,12 +42,14 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %prep
 %autosetup -p1
 
+cp %{SOURCE1} .
+
 # Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
 sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
 %ifarch aarch64
-for soc in hikey hikey960 imx8qm imx8qx juno a3700 gxbb rk3399 rk3368 rk3328 rpi3 rpi4 sun50i_a64 sun50i_h6
+for soc in $(cat %{_arch}-bl31)
 do
 # At the moment we're only making the secure firmware (bl31)
 make HOSTCC="gcc %{optflags}" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
@@ -58,8 +60,8 @@ done
 mkdir -p %{buildroot}%{_datadir}/%{name}
 
 %ifarch aarch64
-# Most platforms want bl31.bin
-for soc in hikey hikey960 imx8qm imx8qx juno rpi3 sun50i_a64 sun50i_h6 zynqmp
+# At the moment we just support adding bl31.bin
+for soc in $(cat %{_arch}-bl31)
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  for file in bl31.bin
@@ -70,7 +72,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
  done
 done
 
-# Rockchips want the bl31.elf, plus rk3399 wants power management co-processor bits
+# Rockchips wants the bl31.elf, plus rk3399 wants power management co-processor bits
 for soc in rk3399 rk3368 rk3328
 do
 mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
