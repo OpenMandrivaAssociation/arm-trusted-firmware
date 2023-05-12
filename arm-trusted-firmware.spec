@@ -2,13 +2,13 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.8
-Release:	2
+Version:	2.8.6
+Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
 URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
-Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
+Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/lts-v%{version}.tar.gz
 Source1:	https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/aarch64-bl31
 Patch0:		atf-2.8-fix-linking.patch
 # At the moment we're only building on aarch64
@@ -41,7 +41,7 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-%autosetup -p1
+%autosetup -p1 -n %{name}-lts-v%{version}
 
 cp %{SOURCE1} .
 
