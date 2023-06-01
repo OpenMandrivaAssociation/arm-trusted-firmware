@@ -2,15 +2,14 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.8.6
+Version:	2.9
 Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
 URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
-Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/lts-v%{version}.tar.gz
+Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
 Source1:	https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/aarch64-bl31
-Patch0:		atf-2.8-fix-linking.patch
 # At the moment we're only building on aarch64
 ExclusiveArch:	%{aarch64}
 
@@ -41,7 +40,7 @@ such as u-boot. As such the binaries aren't of general interest to users.
 %endif
 
 %prep
-%autosetup -p1 -n %{name}-lts-v%{version}
+%autosetup -p1 -n %{name}-%{version}
 
 cp %{SOURCE1} .
 
@@ -49,11 +48,13 @@ cp %{SOURCE1} .
 sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
+%undefine _auto_set_build_flags
+
 %ifarch aarch64
 for soc in $(cat %{_arch}-bl31)
 do
 # At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc %{optflags}" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
+make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="" PLAT=$(echo $soc) bl31
 done
 %endif
 
