@@ -14,6 +14,8 @@ Source1:	https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/a
 BuildRequires:	dtc
 BuildRequires:	gcc
 
+BuildArch:	noarch
+
 %ifnarch %{arm}
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
