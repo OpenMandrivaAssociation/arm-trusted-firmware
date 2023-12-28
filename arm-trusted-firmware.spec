@@ -20,7 +20,7 @@ BuildArch:	noarch
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
 %endif
-%ifnarch %{armx}
+%ifnarch %{aarch64}
 BuildRequires:	cross-aarch64-openmandriva-linux-gnu-gcc-bootstrap
 BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 %endif
