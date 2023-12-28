@@ -55,37 +55,32 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/driver
 %build
 %undefine _auto_set_build_flags
 
-for soc in $(cat aarch64-bl31)
-do
-# At the moment we're only making the secure firmware (bl31)
-make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" PLAT=$(echo $soc) bl31
+for soc in $(cat aarch64-bl31); do
+	# At the moment we're only making the secure firmware (bl31)
+	make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" PLAT=$soc bl31
 done
 
 %install
 mkdir -p %{buildroot}%{_datadir}/%{name}
 
 # At the moment we just support adding bl31.bin
-for soc in $(cat %{_arch}-bl31)
-do
-mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
- for file in bl31.bin
- do
-  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /%{buildroot}%{_datadir}/%{name}/$(echo $soc)/
-  fi
- done
+for soc in $(cat aarch64-bl31); do
+	mkdir -p %{buildroot}%{_datadir}/%{name}/$soc/
+	for file in bl31.bin; do
+		if [ -f build/$soc/release/$file ]; then
+			install -p -m 0644 build/$soc/release/$file /%{buildroot}%{_datadir}/%{name}/$soc/
+		fi
+	done
 done
 
 # Rockchips wants the bl31.elf, plus rk3399 wants power management co-processor bits
-for soc in rk3399 rk3368 rk3328
-do
-mkdir -p %{buildroot}%{_datadir}/%{name}/$(echo $soc)/
- for file in bl31/bl31.elf m0/rk3399m0.bin m0/rk3399m0.elf
- do
-  if [ -f build/$(echo $soc)/release/$(echo $file) ]; then
-    install -p -m 0644 build/$(echo $soc)/release/$(echo $file) /%{buildroot}%{_datadir}/%{name}/$(echo $soc)/
-  fi
- done
+for soc in rk3399 rk3368 rk3328; do
+	mkdir -p %{buildroot}%{_datadir}/%{name}/$soc/
+	for file in bl31/bl31.elf m0/rk3399m0.bin m0/rk3399m0.elf; do
+		if [ -f build/$soc/release/$file ]; then
+			install -p -m 0644 build/$soc/release/$file /%{buildroot}%{_datadir}/%{name}/$soc/
+		fi
+	done
 done
 
 %files -n arm-trusted-firmware-armv8
