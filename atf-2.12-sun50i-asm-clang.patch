@@ -1,0 +1,19 @@
+diff -up arm-trusted-firmware-2.12.0/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c.omv~ arm-trusted-firmware-2.12.0/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c
+--- arm-trusted-firmware-2.12.0/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c.omv~	2025-01-03 19:50:13.541324227 +0100
++++ arm-trusted-firmware-2.12.0/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c	2025-01-03 19:54:18.836705445 +0100
+@@ -25,12 +25,12 @@
+ #define CCSIDR_LSIZE_SHIFT	0
+ #define CCSIDR_LSIZE_MASK	GENMASK(2, 0)
+ 
+-static uint32_t armv8_get_ccsidr(unsigned int sel)
++static uint32_t armv8_get_ccsidr(uint16_t sel)
+ {
+ 	uint32_t reg;
+ 
+-	__asm__ volatile ("msr CSSELR_EL1, %0\n" :: "r" (sel));
+-	__asm__ volatile ("mrs %0, CCSIDR_EL1\n" : "=r" (reg));
++	__asm__ volatile ("msr CSSELR_EL1, %x0\n" :: "r" (sel));
++	__asm__ volatile ("mrs %x0, CCSIDR_EL1\n" : "=r" (reg));
+ 
+ 	return reg;
+ }

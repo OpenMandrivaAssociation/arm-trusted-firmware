@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.10.0
+Version:	2.12.0
 Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
@@ -24,6 +24,9 @@ BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-binutils
 BuildRequires:	cross-aarch64-openmandriva-linux-gnu-gcc-bootstrap
 BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 %endif
+
+%patchlist
+atf-2.12-sun50i-asm-clang.patch
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -49,15 +52,20 @@ such as u-boot. As such the binaries aren't of general interest to users.
 
 cp %{SOURCE1} .
 
-# Fix the name of the cross compile for the rk3399 Cortex-M0 PMU
-sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' plat/rockchip/rk3399/drivers/m0/Makefile
+# Fix the name of the cross compile for 32-bit targets
+sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' make_helpers/toolchains/aarch32.mk make_helpers/toolchains/rk3399-m0.mk plat/rockchip/rk3399/drivers/m0/Makefile
 
 %build
 %undefine _auto_set_build_flags
 
 for soc in $(cat aarch64-bl31); do
 	# At the moment we're only making the secure firmware (bl31)
-	make HOSTCC="gcc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" PLAT=$soc bl31
+	if echo $soc |grep -qE '(imx|k3)'; then
+		# PIE bl31 has issues with -fPIC when building with clang
+		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
+	else
+		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
+	fi
 done
 
 %install
