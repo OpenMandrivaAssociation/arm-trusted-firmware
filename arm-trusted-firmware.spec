@@ -12,8 +12,9 @@ Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version
 
 BuildRequires:	dtc
 BuildRequires:	gcc
-
-BuildArch:	noarch
+BuildRequires:	pkgconfig(openssl)
+BuildRequires:	pkgconfig(libcrypto)
+BuildRequires:	pkgconfig(python3)
 
 %ifnarch %{arm}
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
@@ -42,9 +43,31 @@ Boot Requirements (TBBR) and Secure Monitor.
 Note: the contents of this package are generally just consumed by bootloaders
 such as u-boot. As such the binaries aren't of general interest to users.
 
+%package -n fiptool
+Summary: Tools for working with FIP (Firmware Image Package) images
+Group: Development/Tools
+
+%description -n fiptool
+Tools for working with FIP (Firmware Image Package) images.
+
+FIPs are commonly used on ARM boards to combine
+arm-trusted-firmware and other early bootup code (e.g. u-boot) into
+one image that can be flashed to the board.
+
+%package tools
+Summary: Tools for working with ARM trusted firmware
+Group: Development/Tools
+Requires: fiptool = %{EVRD}
+
+%description tools
+Tools for working with ARM trusted firmware
+
+This includes tools for creating board specific image files.
+
 %package -n arm-trusted-firmware-armv8
 Summary:	ARM Trusted Firmware for ARMv8-A
 Group:		Development/C
+BuildArch:	noarch
 
 %description -n arm-trusted-firmware-armv8
 ARM Trusted Firmware binaries for various  ARMv8-A SoCs.
@@ -103,30 +126,37 @@ for soc in $BOARDS; do
 	tegra)
 		for s in plat/nvidia/tegra/soc/*; do
 			tsoc=$(basename $s)
-			make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_SOC=$tsoc ERRORS=-Wno-error bl31
+			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_SOC=$tsoc ERRORS=-Wno-error bl31
 		done
 		;;
 	corstone*)
-		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_PLATFORM=fvp bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_PLATFORM=fvp bl31
 		;;
 	k3)
 		for s in plat/ti/k3/board/*; do
-			make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 bl31
+			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 bl31
 		done
 		;;
 	qemu_sbsa)
-		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc all fip
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc all fip
 		;;
 	imx*|stm32mp2|uniphier|rk3399|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc
 		# Mostly asm code that needs adjustments and -fPIC/-pie conflicts
-		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
 		;;
 	*)
-		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc ERRORS=-Wno-error bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc ERRORS=-Wno-error bl31
 		;;
 	esac
 done
+
+for i in tools/fiptool tools/amlogic tools/cert_create tools/encrypt_fw tools/marvell/doimage tools/stm32image; do
+	%make_build -C $i
+done
+cd tools/tlc
+%py_build
+cd ../..
 
 %install
 cd build
@@ -141,8 +171,33 @@ find . -type d -name release |while read r; do
 		exit 1
 	fi
 done
+cd ..
+
+mkdir -p %{buildroot}%{_bindir}
+install -cD -m755 tools/fiptool/fiptool %{buildroot}%{_bindir}/
+install -cD -m755 tools/amlogic/doimage %{buildroot}%{_bindir}/doimage-amlogic
+install -cD -m755 tools/cert_create/cert_create %{buildroot}%{_bindir}/
+install -cD -m755 tools/encrypt_fw/encrypt_fw %{buildroot}%{_bindir}/
+install -cD -m755 tools/marvell/doimage/doimage %{buildroot}%{_bindir}/doimage-marvell
+install -cD -m755 tools/stm32image/stm32image %{buildroot}%{_bindir}/
+
+cd tools/tlc
+%py_install
+cd ../..
 
 %files -n arm-trusted-firmware-armv8
 %license license.rst
 %doc readme.rst
 %{_datadir}/%{name}
+
+%files -n fiptool
+%{_bindir}/fiptool
+
+%files tools
+%{_bindir}/doimage-*
+%{_bindir}/cert_create
+%{_bindir}/encrypt_fw
+%{_bindir}/stm32image
+%{_bindir}/tlc
+%{python_sitelib}/tlc
+%{python_sitelib}/tlc*.dist-info
