@@ -110,15 +110,14 @@ for soc in $BOARDS; do
 		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_PLATFORM=fvp bl31
 		;;
 	k3)
-		# PIE bl31 has issues with -fPIC when building with clang
-		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=generic SPD=opteed bl31
-		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=j784s4 SPD=opteed K3_USART=0x8 bl31
-		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=lite SPD=opteed bl31
+		for s in plat/ti/k3/board/*; do
+			make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 bl31
+		done
 		;;
 	qemu_sbsa)
 		make HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-lld aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-lld CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc all fip
 		;;
-	imx*|stm32mp2|uniphier|rk3399|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575)
+	imx*|stm32mp2|uniphier|rk3399|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc
 		# Mostly asm code that needs adjustments and -fPIC/-pie conflicts
 		make HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
