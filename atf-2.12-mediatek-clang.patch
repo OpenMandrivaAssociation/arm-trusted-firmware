@@ -1,0 +1,26 @@
+diff -up arm-trusted-firmware-2.12.0/plat/mediatek/mt8173/include/plat_macros.S.omv~ arm-trusted-firmware-2.12.0/plat/mediatek/mt8173/include/plat_macros.S
+--- arm-trusted-firmware-2.12.0/plat/mediatek/mt8173/include/plat_macros.S.omv~	2025-01-03 22:26:01.274099409 +0100
++++ arm-trusted-firmware-2.12.0/plat/mediatek/mt8173/include/plat_macros.S	2025-01-03 22:26:16.042188748 +0100
+@@ -13,8 +13,7 @@
+ gicc_regs:
+ 	.asciz "gicc_hppir", "gicc_ahppir", "gicc_ctlr", ""
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up arm-trusted-firmware-2.12.0/plat/mediatek/mt8183/include/plat_macros.S.omv~ arm-trusted-firmware-2.12.0/plat/mediatek/mt8183/include/plat_macros.S
+--- arm-trusted-firmware-2.12.0/plat/mediatek/mt8183/include/plat_macros.S.omv~	2025-01-03 22:30:45.349522916 +0100
++++ arm-trusted-firmware-2.12.0/plat/mediatek/mt8183/include/plat_macros.S	2025-01-03 22:30:53.237996736 +0100
+@@ -13,8 +13,7 @@
+ gicc_regs:
+ 	.asciz "gicc_hppir", "gicc_ahppir", "gicc_ctlr", ""
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:

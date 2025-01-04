@@ -1,0 +1,12 @@
+diff -up arm-trusted-firmware-2.12.0/plat/intel/soc/common/socfpga_delay_timer.c.omv~ arm-trusted-firmware-2.12.0/plat/intel/soc/common/socfpga_delay_timer.c
+--- arm-trusted-firmware-2.12.0/plat/intel/soc/common/socfpga_delay_timer.c.omv~	2025-01-03 20:45:00.172858356 +0100
++++ arm-trusted-firmware-2.12.0/plat/intel/soc/common/socfpga_delay_timer.c	2025-01-03 20:45:06.524171792 +0100
+@@ -51,6 +51,6 @@ void socfpga_delay_timer_init(void)
+ 	socfpga_delay_timer_init_args();
+ 	mmio_write_32(SOCFPGA_GLOBAL_TIMER, SOCFPGA_GLOBAL_TIMER_EN);
+ 
+-	asm volatile("msr cntp_ctl_el0, %0" : : "r" (SOCFPGA_GLOBAL_TIMER_EN));
+-	asm volatile("msr cntp_tval_el0, %0" : : "r" (~0));
++	asm volatile("msr cntp_ctl_el0, %x0" : : "r" (SOCFPGA_GLOBAL_TIMER_EN));
++	asm volatile("msr cntp_tval_el0, %x0" : : "r" (~0));
+ }

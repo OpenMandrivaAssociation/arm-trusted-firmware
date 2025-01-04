@@ -1,0 +1,13 @@
+diff -up arm-trusted-firmware-2.12.0/include/plat/marvell/armada/common/aarch64/marvell_macros.S.omv~ arm-trusted-firmware-2.12.0/include/plat/marvell/armada/common/aarch64/marvell_macros.S
+--- arm-trusted-firmware-2.12.0/include/plat/marvell/armada/common/aarch64/marvell_macros.S.omv~	2025-01-03 20:34:41.003540721 +0100
++++ arm-trusted-firmware-2.12.0/include/plat/marvell/armada/common/aarch64/marvell_macros.S	2025-01-03 20:35:24.165456713 +0100
+@@ -30,8 +30,7 @@ icc_regs:
+ #endif
+ /* Registers common to both GICv2 and GICv3 */
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
