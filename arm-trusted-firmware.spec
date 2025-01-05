@@ -15,6 +15,7 @@ BuildRequires:	gcc
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libcrypto)
 BuildRequires:	pkgconfig(python3)
+BuildRequires:	python%{pyver}dist(poetry)
 
 %ifnarch %{arm}
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
