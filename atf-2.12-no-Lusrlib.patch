@@ -1,12 +1,12 @@
-diff -up arm-trusted-firmware-2.12.0/tools/fiptool/Makefile.omv~ arm-trusted-firmware-2.12.0/tools/fiptool/Makefile
---- arm-trusted-firmware-2.12.0/tools/fiptool/Makefile.omv~	2025-01-03 20:10:55.600495684 +0100
-+++ arm-trusted-firmware-2.12.0/tools/fiptool/Makefile	2025-01-03 20:11:26.756880729 +0100
-@@ -47,7 +47,7 @@ DEFINES += -DUSING_OPENSSL3=$(USING_OPEN
+diff -uraN arm-trusted-firmware-2.14.0/tools/fiptool/Makefile omv-arm-trusted-firmware-2.14.0/tools/fiptool/Makefile
+--- arm-trusted-firmware-2.14.0/tools/fiptool/Makefile	2025-11-24 15:21:09.000000000 +0100
++++ omv-arm-trusted-firmware-2.14.0/tools/fiptool/Makefile	2025-12-24 00:58:47.504034087 +0100
+@@ -45,7 +45,7 @@
  # directory. However, for a local build of OpenSSL, the built binaries are
  # located under the main project directory (i.e.: ${OPENSSL_DIR}, not
  # ${OPENSSL_DIR}/lib/).
--LDOPTS := -L${OPENSSL_DIR}/lib -L${OPENSSL_DIR} -lcrypto
-+LDOPTS := -lcrypto
- INCLUDE_PATHS += -I${OPENSSL_DIR}/include
+-FIPTOOL_LDFLAGS := -L${OPENSSL_DIR}/lib -L${OPENSSL_DIR} -lcrypto
++FIPTOOL_LDFLAGS := -lcrypto
+ FIPTOOL_INCLUDE_DIRS += ${OPENSSL_DIR}/include
  endif # STATIC
  
