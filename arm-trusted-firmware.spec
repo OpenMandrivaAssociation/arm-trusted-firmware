@@ -27,7 +27,7 @@ BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 %endif
 
 %patchlist
-https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
+#https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
 atf-2.12-sun50i-asm-clang.patch
 atf-2.12-qti-clang.patch
 atf-2.12-mediatek-clang.patch
