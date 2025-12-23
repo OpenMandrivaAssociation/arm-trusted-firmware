@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.12.0
-Release:	2
+Version:	2.14.0
+Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
