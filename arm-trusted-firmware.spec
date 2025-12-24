@@ -10,6 +10,7 @@ Group:		Development/C
 URL:		https://github.com/ARM-software/arm-trusted-firmware/wiki
 Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version}.tar.gz
 
+BuildRequires:	make
 BuildRequires:	dtc
 BuildRequires:	gcc
 BuildRequires:	pkgconfig(openssl)
