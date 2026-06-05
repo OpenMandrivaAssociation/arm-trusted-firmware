@@ -3,7 +3,7 @@
 
 Name:		arm-trusted-firmware
 Version:	2.12.0
-Release:	2
+Release:	3
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
