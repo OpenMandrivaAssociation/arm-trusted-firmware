@@ -2,8 +2,8 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.12.0
-Release:	3
+Version:	2.15
+Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
 Group:		Development/C
@@ -27,13 +27,13 @@ BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 %endif
 
 %patchlist
-https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
-atf-2.12-sun50i-asm-clang.patch
-atf-2.12-qti-clang.patch
-atf-2.12-mediatek-clang.patch
-atf-2.12-marvell-clang.patch
-atf-2.12-agilex-clang.patch
-atf-2.12-no-Lusrlib.patch
+# dropped (no longer applies): https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
+# dropped (no longer applies): atf-2.12-sun50i-asm-clang.patch
+# dropped (no longer applies): atf-2.12-qti-clang.patch
+# dropped (no longer applies): atf-2.12-mediatek-clang.patch
+# dropped (no longer applies): atf-2.12-marvell-clang.patch
+# dropped (no longer applies): atf-2.12-agilex-clang.patch
+# dropped (no longer applies): atf-2.12-no-Lusrlib.patch
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -77,7 +77,7 @@ Note: the contents of this package are generally just consumed by bootloaders
 such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
-%autosetup -p1 -n %{name}-%{version}
+%autosetup -p1 -n arm-trusted-firmware-2.15.0
 
 # Fix the name of the cross compile for 32-bit targets
 sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' make_helpers/toolchains/aarch32.mk make_helpers/toolchains/rk3399-m0.mk plat/rockchip/rk3399/drivers/m0/Makefile
