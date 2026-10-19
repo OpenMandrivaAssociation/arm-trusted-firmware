@@ -94,8 +94,8 @@ for soc in $BOARDS; do
 	a5ds|corstone700|fvp_ve|rk3288)
 		# aarch32 platform without bl31, needs AARCH32_SP
 		;;
-	a70x0|a70x0_amc|a70x0_mochabin|a80x0|a80x0_mcbin|a80x0_puzzle|t9130|t9130_cex7_eval)
-		# Needs SCP_BL2
+	a70x0|a70x0_amc|a70x0_mochabin|a80x0|a80x0_mcbin|a80x0_nbx|a80x0_puzzle|t9130|t9130_cex7_eval)
+		# Needs a prebuilt SCP_BL2 image, which we do not ship
 		;;
 	mdm9607|msm8909|picopi|warp7)
 		# 32-bit target, need to specify ARCH=aarch32 
