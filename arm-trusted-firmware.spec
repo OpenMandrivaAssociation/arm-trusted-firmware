@@ -144,6 +144,12 @@ for soc in $BOARDS; do
 			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 E=0 bl31
 		done
 		;;
+	k3low)
+		# lld rejects R_AARCH64_ABS64 in the cpu_ops objects. gcc ld accepts them.
+		for s in plat/ti/k3low/board/*; do
+			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) E=0 bl31
+		done
+		;;
 	qemu_sbsa)
 		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 all fip
 		;;
