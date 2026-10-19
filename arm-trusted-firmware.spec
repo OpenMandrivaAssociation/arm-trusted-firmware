@@ -106,8 +106,9 @@ for soc in $BOARDS; do
 	mt8186|mt8192|mt8195)
 		# Seems broken: UART_CLOCK undefined
 		;;
-	mt8188)
-		# Seems broken: error: use of undeclared identifier 'BOOT_ARG_FROM_BL2'
+	mt8188|mt8189|mt8196)
+		# mtk_bl31_setup.c references mtk_bl31_fw_config, which these
+		# platforms do not define.
 		;;
 	imx8mq)
 		# Seems broken (undefined imx_hab_handler), and probably is a dupe of imx8qm
