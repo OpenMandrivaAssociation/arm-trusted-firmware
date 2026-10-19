@@ -87,6 +87,7 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' make_helpers/toolchains/aar
 # Clang is the linker driver (cc-id llvm-clang infers ld=cc). ld-id must
 # be llvm-clang so flags are passed with -Xlinker and -fuse-ld=lld.
 # llvm-lld expects a raw lld binary and rejects those flags on cc.
+# E=0 disables -Werror. The ERRORS variable is not read by the makefile.
 
 BOARDS=$(make PLAT=this_does_not_exist 2>&1 |grep available |sed -e 's,.*available: ,,;s,\".*,,;s,|, ,g')
 for soc in $BOARDS; do
@@ -130,11 +131,11 @@ for soc in $BOARDS; do
 	tegra)
 		for s in plat/nvidia/tegra/soc/*; do
 			tsoc=$(basename $s)
-			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_SOC=$tsoc ERRORS=-Wno-error bl31
+			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_SOC=$tsoc E=0 bl31
 		done
 		;;
 	corstone*)
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_PLATFORM=fvp bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_PLATFORM=fvp E=0 bl31
 		;;
 	k3)
 		for s in plat/ti/k3/board/*; do
@@ -142,7 +143,7 @@ for soc in $BOARDS; do
 		done
 		;;
 	qemu_sbsa)
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc all fip
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 all fip
 		;;
 	imx*|stm32mp2|uniphier|rk3399|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc
@@ -150,7 +151,7 @@ for soc in $BOARDS; do
 		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
 		;;
 	*)
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc ERRORS=-Wno-error bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 bl31
 		;;
 	esac
 done
