@@ -12,6 +12,7 @@ Source0:	https://github.com/ARM-software/arm-trusted-firmware/archive/v%{version
 
 BuildRequires:	dtc
 BuildRequires:	gcc
+BuildRequires:	make
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libcrypto)
 BuildRequires:	pkgconfig(python3)
