@@ -28,12 +28,10 @@ BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 %endif
 
 %patchlist
+# Clang's integrated assembler does not concatenate adjacent string
+# literals, and -Werror rejects 32-bit operands on 64-bit sysreg msr/mrs.
+Patch0:		0001-clang-ias-asciz-and-sysreg.patch
 # dropped (no longer applies): https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
-# dropped (no longer applies): atf-2.12-sun50i-asm-clang.patch
-# dropped (no longer applies): atf-2.12-qti-clang.patch
-# dropped (no longer applies): atf-2.12-mediatek-clang.patch
-# dropped (no longer applies): atf-2.12-marvell-clang.patch
-# dropped (no longer applies): atf-2.12-agilex-clang.patch
 # dropped (no longer applies): atf-2.12-no-Lusrlib.patch
 
 %description

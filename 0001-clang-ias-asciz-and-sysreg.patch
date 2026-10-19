@@ -1,0 +1,104 @@
+diff -up a/include/plat/marvell/armada/common/aarch64/marvell_macros.S b/include/plat/marvell/armada/common/aarch64/marvell_macros.S
+--- a/include/plat/marvell/armada/common/aarch64/marvell_macros.S
++++ b/include/plat/marvell/armada/common/aarch64/marvell_macros.S
+@@ -30,8 +30,7 @@
+ #endif
+ /* Registers common to both GICv2 and GICv3 */
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up a/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c b/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c
+--- a/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c
++++ b/plat/allwinner/sun50i_h616/sunxi_h616_dtb.c
+@@ -29,8 +29,8 @@
+ {
+ 	uint32_t reg;
+ 
+-	__asm__ volatile ("msr CSSELR_EL1, %0\n" :: "r" (sel));
+-	__asm__ volatile ("mrs %0, CCSIDR_EL1\n" : "=r" (reg));
++	__asm__ volatile ("msr CSSELR_EL1, %x0\n" :: "r" (sel));
++	__asm__ volatile ("mrs %x0, CCSIDR_EL1\n" : "=r" (reg));
+ 
+ 	return reg;
+ }
+diff -up a/plat/intel/soc/common/socfpga_delay_timer.c b/plat/intel/soc/common/socfpga_delay_timer.c
+--- a/plat/intel/soc/common/socfpga_delay_timer.c
++++ b/plat/intel/soc/common/socfpga_delay_timer.c
+@@ -51,6 +51,6 @@
+ 	socfpga_delay_timer_init_args();
+ 	mmio_write_32(SOCFPGA_GLOBAL_TIMER, SOCFPGA_GLOBAL_TIMER_EN);
+ 
+-	asm volatile("msr cntp_ctl_el0, %0" : : "r" (SOCFPGA_GLOBAL_TIMER_EN));
+-	asm volatile("msr cntp_tval_el0, %0" : : "r" (~0));
++	asm volatile("msr cntp_ctl_el0, %x0" : : "r" (SOCFPGA_GLOBAL_TIMER_EN));
++	asm volatile("msr cntp_tval_el0, %x0" : : "r" (~0));
+ }
+diff -up a/plat/mediatek/common/include/plat_macros.S b/plat/mediatek/common/include/plat_macros.S
+--- a/plat/mediatek/common/include/plat_macros.S
++++ b/plat/mediatek/common/include/plat_macros.S
+@@ -13,8 +13,7 @@
+ gicc_regs:
+ 	.asciz "gicc_hppir", "gicc_ahppir", "gicc_ctlr", ""
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up a/plat/mediatek/mt8173/include/plat_macros.S b/plat/mediatek/mt8173/include/plat_macros.S
+--- a/plat/mediatek/mt8173/include/plat_macros.S
++++ b/plat/mediatek/mt8173/include/plat_macros.S
+@@ -13,8 +13,7 @@
+ gicc_regs:
+ 	.asciz "gicc_hppir", "gicc_ahppir", "gicc_ctlr", ""
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up a/plat/mediatek/mt8183/include/plat_macros.S b/plat/mediatek/mt8183/include/plat_macros.S
+--- a/plat/mediatek/mt8183/include/plat_macros.S
++++ b/plat/mediatek/mt8183/include/plat_macros.S
+@@ -13,8 +13,7 @@
+ gicc_regs:
+ 	.asciz "gicc_hppir", "gicc_ahppir", "gicc_ctlr", ""
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up a/plat/qti/common/inc/aarch64/plat_macros.S b/plat/qti/common/inc/aarch64/plat_macros.S
+--- a/plat/qti/common/inc/aarch64/plat_macros.S
++++ b/plat/qti/common/inc/aarch64/plat_macros.S
+@@ -25,8 +25,7 @@
+ 
+ /* Registers common to both GICv2 and GICv3 */
+ gicd_pend_reg:
+-	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n"
++	.asciz "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n"
+ newline:
+ 	.asciz "\n"
+ spacer:
+diff -up a/plat/rockchip/common/include/plat_macros.S b/plat/rockchip/common/include/plat_macros.S
+--- a/plat/rockchip/common/include/plat_macros.S
++++ b/plat/rockchip/common/include/plat_macros.S
+@@ -23,8 +23,7 @@
+ 
+ /* Registers common to both GICv2 and GICv3 */
+ gicd_pend_reg:
+-	.ascii "gicd_ispendr regs (Offsets 0x200 - 0x278)\n"	\
+-		" Offset:\t\t\tvalue\n\0"
++	.ascii "gicd_ispendr regs (Offsets 0x200 - 0x278)\n Offset:\t\t\tvalue\n\0"
+ newline:
+ 	.asciz "\n"
+ spacer:
