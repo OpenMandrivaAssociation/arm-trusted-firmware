@@ -88,6 +88,8 @@ sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' make_helpers/toolchains/aar
 # be llvm-clang so flags are passed with -Xlinker and -fuse-ld=lld.
 # llvm-lld expects a raw lld binary and rejects those flags on cc.
 # E=0 disables -Werror. The ERRORS variable is not read by the makefile.
+# The gcc cross builds need it as well: imx94 stops on an unused
+# variable in drivers/nxp/scmi/vendor/scmi_imx9.c.
 
 BOARDS=$(make PLAT=this_does_not_exist 2>&1 |grep available |sed -e 's,.*available: ,,;s,\".*,,;s,|, ,g')
 for soc in $BOARDS; do
@@ -139,7 +141,7 @@ for soc in $BOARDS; do
 		;;
 	k3)
 		for s in plat/ti/k3/board/*; do
-			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 bl31
+			%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc TARGET_BOARD=$(basename $s) SPD=opteed K3_USART=0x8 E=0 bl31
 		done
 		;;
 	qemu_sbsa)
@@ -148,7 +150,7 @@ for soc in $BOARDS; do
 	imx*|stm32mp2|uniphier|rk3399|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc
 		# Mostly asm code that needs adjustments and -fPIC/-pie conflicts
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc bl31
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 bl31
 		;;
 	*)
 		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 bl31
