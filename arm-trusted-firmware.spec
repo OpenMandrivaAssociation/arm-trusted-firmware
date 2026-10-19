@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:		arm-trusted-firmware
-Version:	2.15
+Version:	2.15.0
 Release:	1
 Summary:	ARM Trusted Firmware
 License:	BSD
@@ -77,7 +77,7 @@ Note: the contents of this package are generally just consumed by bootloaders
 such as u-boot. As such the binaries aren't of general interest to users.
 
 %prep
-%autosetup -p1 -n arm-trusted-firmware-2.15.0
+%autosetup -p1 -n arm-trusted-firmware-%{version}
 
 # Fix the name of the cross compile for 32-bit targets
 sed -i 's/arm-none-eabi-/armv7hnl-linux-gnueabihf-/' make_helpers/toolchains/aarch32.mk make_helpers/toolchains/rk3399-m0.mk plat/rockchip/rk3399/drivers/m0/Makefile
