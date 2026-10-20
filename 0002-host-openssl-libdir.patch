@@ -1,0 +1,49 @@
+diff -Nurp a/make_helpers/build_macros.mk b/make_helpers/build_macros.mk
+--- a/make_helpers/build_macros.mk	2026-05-28 18:29:49.000000000 +0200
++++ b/make_helpers/build_macros.mk	2026-10-20 18:01:32.900495244 +0200
+@@ -293,7 +293,8 @@ define SELECT_OPENSSL_API_VERSION
+     $(eval OPENSSL_CURRENT_VER = $(word 2, ${OPENSSL_INFO}))
+     $(eval OPENSSL_CURRENT_VER_MAJOR = $(firstword $(subst ., ,$(OPENSSL_CURRENT_VER))))
+     # If OpenSSL version is 3.x, then set USING_OPENSSL3 flag to 1
+-    $(if $(filter 3,$(OPENSSL_CURRENT_VER_MAJOR)), $(eval USING_OPENSSL3 = 1))
++    # 3+ uses the EVP API. Cooker is OpenSSL 4; major 3 alone leaves the 1.1 path.
++    $(if $(filter-out 0 1 2,$(OPENSSL_CURRENT_VER_MAJOR)),$(eval USING_OPENSSL3 = 1))
+ endef
+ 
+ ################################################################################
+diff -Nurp a/tools/cert_create/Makefile b/tools/cert_create/Makefile
+--- a/tools/cert_create/Makefile	2026-05-28 18:29:49.000000000 +0200
++++ b/tools/cert_create/Makefile	2026-10-20 18:01:32.900059059 +0200
+@@ -70,7 +70,6 @@ CRTTOOL_INCLUDE_DIRS += ./include ${PLAT
+ # directory. However, for a local build of OpenSSL, the built binaries are
+ # located under the main project directory (i.e.: ${OPENSSL_DIR}, not
+ # ${OPENSSL_DIR}/lib/).
+-CRTTOOL_LDFLAGS += -L ${OPENSSL_DIR}/lib -L ${OPENSSL_DIR}
+ CRTTOOL_LDFLAGS += -lssl -lcrypto
+ 
+ .PHONY: all clean realclean --openssl
+diff -Nurp a/tools/encrypt_fw/Makefile b/tools/encrypt_fw/Makefile
+--- a/tools/encrypt_fw/Makefile	2026-05-28 18:29:49.000000000 +0200
++++ b/tools/encrypt_fw/Makefile	2026-10-20 18:01:32.900222731 +0200
+@@ -52,8 +52,7 @@ ENCTOOL_INCLUDE_DIRS := ./include ../../
+ # directory. However, for a local build of OpenSSL, the built binaries are
+ # located under the main project directory (i.e.: ${OPENSSL_DIR}, not
+ # ${OPENSSL_DIR}/lib/).
+-ENCTOOL_LDFLAGS := -L${OPENSSL_DIR}/lib -L${OPENSSL_DIR}
+-ENCTOOL_LDFLAGS += -lssl -lcrypto
++ENCTOOL_LDFLAGS := -lssl -lcrypto
+ 
+ .PHONY: all clean realclean --openssl
+ 
+diff -Nurp a/tools/fiptool/Makefile b/tools/fiptool/Makefile
+--- a/tools/fiptool/Makefile	2026-05-28 18:29:49.000000000 +0200
++++ b/tools/fiptool/Makefile	2026-10-20 18:01:32.899744125 +0200
+@@ -45,7 +45,7 @@ FIPTOOL_DEFINES += USING_OPENSSL3=$(USIN
+ # directory. However, for a local build of OpenSSL, the built binaries are
+ # located under the main project directory (i.e.: ${OPENSSL_DIR}, not
+ # ${OPENSSL_DIR}/lib/).
+-FIPTOOL_LDFLAGS := -L${OPENSSL_DIR}/lib -L${OPENSSL_DIR} -lcrypto
++FIPTOOL_LDFLAGS := -lcrypto
+ FIPTOOL_INCLUDE_DIRS += ${OPENSSL_DIR}/include
+ endif # STATIC
+ 

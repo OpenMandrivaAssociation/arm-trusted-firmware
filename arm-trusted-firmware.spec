@@ -15,6 +15,8 @@ BuildRequires:	gcc
 BuildRequires:	make
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libcrypto)
+# fiptool's OpenSSL 3/4 probe runs ${OPENSSL_DIR}/bin/openssl.
+BuildRequires:	openssl
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	python%{pyver}dist(poetry)
 
@@ -33,6 +35,9 @@ BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 0001-clang-ias-asciz-and-sysreg.patch
 # dropped (no longer applies): https://src.fedoraproject.org/rpms/arm-trusted-firmware/raw/rawhide/f/rk356x-scmi-clk-reset.patch
 # dropped (no longer applies): atf-2.12-no-Lusrlib.patch
+# Host tools pass -L/usr/lib. That is the 32-bit libc on x86_64, so fiptool
+# links as elf32-i386. Also treat OpenSSL 4 as the EVP API (probe matched 3 only).
+0002-host-openssl-libdir.patch
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
@@ -152,8 +157,10 @@ for soc in $BOARDS; do
 		done
 		;;
 	qemu_sbsa)
-		# fiptool's default -L/usr/lib picks up the 32-bit libc on x86_64.
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 FIPTOOL_LDFLAGS="-L%{_libdir} -lcrypto" all fip
+		# all+fip builds fiptool. The top makefile clears MAKEOVERRIDES, so a
+		# FIPTOOL_LDFLAGS= on this command never reaches tools/fiptool.
+		# 0002 drops -L/usr/lib in the tool makefile instead.
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 all fip
 		;;
 	imx*|stm32mp2|uniphier|px30|rk3328|rk3368|rk3399|rk3568|rk3576|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc.
