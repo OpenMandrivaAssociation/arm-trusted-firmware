@@ -152,7 +152,8 @@ for soc in $BOARDS; do
 		done
 		;;
 	qemu_sbsa)
-		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 all fip
+		# fiptool's default -L/usr/lib picks up the 32-bit libc on x86_64.
+		%make_build HOSTCC="cc $RPM_OPT_FLAGS" CC="cc" aarch64-cc-id=llvm-clang aarch64-ld-id=llvm-clang aarch32-cc-id=llvm-clang aarch32-ld-id=llvm-clang CROSS_COMPILE="aarch64-openmandriva-linux-gnu-" CROSS_COMPILE32="armv7hnl-linux-gnueabihf-" PLAT=$soc E=0 FIPTOOL_LDFLAGS="-L%{_libdir} -lcrypto" all fip
 		;;
 	imx*|stm32mp2|uniphier|px30|rk3328|rk3368|rk3399|rk3568|rk3576|rk3588|poplar|rdn1edge|rdn2|rdv1|rdv1mc|sgi575|fvp_r)
 		# Generally the same as "normal", but needs to be built with gcc.
@@ -167,7 +168,11 @@ for soc in $BOARDS; do
 done
 
 for i in tools/fiptool tools/amlogic tools/cert_create tools/encrypt_fw tools/marvell/doimage tools/stm32image; do
-	%make_build -C $i
+	# OpenSSL tools default to -L/usr/lib, the 32-bit directory on x86_64.
+	%make_build -C $i \
+		FIPTOOL_LDFLAGS="-L%{_libdir} -lcrypto" \
+		CRTTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto" \
+		ENCTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto"
 done
 cd tools/tlc
 %py_build
