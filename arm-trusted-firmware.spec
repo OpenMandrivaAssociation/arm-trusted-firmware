@@ -124,11 +124,12 @@ for soc in $BOARDS; do
 	npcm845x)
 		# Need to set BL32_BASE -- probably board specific
 		;;
-	rcar|rzg)
-		# Need to specify LSI -- probably board specific
+	rcar|rcar_gen4|rcar_gen5|rzg)
+		# LSI= selects the SoC. These ports refuse to build without it.
 		;;
-	rdv3)
-		# Needs mbedtls for bare metal
+	rdv3|stingray)
+		# rdv3 needs mbedtls for bare metal. stingray's trusted boot
+		# uses contrib/mbed-tls, which the release tarball leaves empty.
 		;;
 	sc7180|sc7280)
 		# undefined symbol: coreboot_get_memory_type
