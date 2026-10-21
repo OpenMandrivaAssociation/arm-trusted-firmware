@@ -17,8 +17,6 @@ BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(libcrypto)
 # fiptool's OpenSSL 3/4 probe runs ${OPENSSL_DIR}/bin/openssl.
 BuildRequires:	openssl
-BuildRequires:	pkgconfig(python3)
-BuildRequires:	python%{pyver}dist(poetry)
 
 %ifnarch %{arm}
 BuildRequires:	cross-armv7hnl-openmandriva-linux-gnueabihf-gcc-bootstrap
@@ -192,9 +190,9 @@ for i in tools/fiptool tools/amlogic tools/cert_create tools/encrypt_fw tools/ma
 		CRTTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto" \
 		ENCTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto"
 done
-cd tools/tlc
-%py_build
-cd ../..
+# tools/tlc is only poetry.lock. Upstream removed the Transfer List Compiler
+# (3ff7523); the implementation lives in the libtl submodule, which the
+# release tarball leaves empty. The firmware images do not need it.
 
 %install
 cd build
@@ -219,10 +217,6 @@ install -cD -m755 tools/encrypt_fw/encrypt_fw %{buildroot}%{_bindir}/
 install -cD -m755 tools/marvell/doimage/doimage %{buildroot}%{_bindir}/doimage-marvell
 install -cD -m755 tools/stm32image/stm32image %{buildroot}%{_bindir}/
 
-cd tools/tlc
-%py_install
-cd ../..
-
 %files -n arm-trusted-firmware-armv8
 %license license.rst
 %doc readme.rst
@@ -236,6 +230,3 @@ cd ../..
 %{_bindir}/cert_create
 %{_bindir}/encrypt_fw
 %{_bindir}/stm32image
-%{_bindir}/tlc
-%{python_sitelib}/tlc
-%{python_sitelib}/tlc*.dist-info
