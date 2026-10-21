@@ -175,9 +175,19 @@ for soc in $BOARDS; do
 	esac
 done
 
+# MAKE_TOOL writes under $(BUILD_PLAT)/tools. An empty BUILD_PLAT is /tools,
+# which the builder cannot create (x86_64 679547, after every platform built).
+# cert_create includes plat_helpers unless PLAT is none.
+top=$(pwd)
 for i in tools/fiptool tools/amlogic tools/cert_create tools/encrypt_fw tools/marvell/doimage tools/stm32image; do
+	platarg=
+	if [ "$i" = tools/cert_create ]; then
+		platarg=PLAT=none
+	fi
 	# OpenSSL tools default to -L/usr/lib, the 32-bit directory on x86_64.
 	%make_build -C $i \
+		BUILD_PLAT="$top" \
+		$platarg \
 		FIPTOOL_LDFLAGS="-L%{_libdir} -lcrypto" \
 		CRTTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto" \
 		ENCTOOL_LDFLAGS="-L%{_libdir} -lssl -lcrypto"
