@@ -1,0 +1,29 @@
+cert_create: skip PKCS#11 engines when OpenSSL has no ENGINE API.
+
+OpenSSL 4 defines OPENSSL_NO_ENGINE and ships no ENGINE_* symbols.
+key_load_pkcs11() still called them, so cert_create failed to link
+(znver1 679910). File keys keep using PEM_read_PrivateKey.
+
+--- a/tools/cert_create/src/key.c
++++ b/tools/cert_create/src/key.c
+@@ -211,6 +211,11 @@
+ 
+ static EVP_PKEY *key_load_pkcs11(const char *uri)
+ {
++#ifdef OPENSSL_NO_ENGINE
++	/* OpenSSL 4 removes the ENGINE API. PKCS#11 URIs need it. */
++	fprintf(stderr, "PKCS#11 keys need the OpenSSL ENGINE API, which is not available\n");
++	return NULL;
++#else
+ 	char *key_pass;
+ 	EVP_PKEY *pkey;
+ 	ENGINE *e;
+@@ -248,7 +253,7 @@
+ err:
+ 	ENGINE_free(e);
+ 	return NULL;
+-
++#endif
+ }
+ 
+ unsigned int key_load(cert_key_t *key)

@@ -36,6 +36,8 @@ BuildRequires:	cross-aarch64-openmandriva-linux-gnu-binutils
 # Host tools pass -L/usr/lib. That is the 32-bit libc on x86_64, so fiptool
 # links as elf32-i386. Also treat OpenSSL 4 as the EVP API (probe matched 3 only).
 0002-host-openssl-libdir.patch
+# OpenSSL 4 has no ENGINE_* symbols. cert_create uses them only for PKCS#11 URIs.
+0003-cert-create-no-engine.patch
 
 %description
 ARM Trusted firmware is a reference implementation of secure world software for
