@@ -183,7 +183,10 @@ for i in tools/fiptool tools/amlogic tools/cert_create tools/encrypt_fw tools/ma
 		platarg=PLAT=none
 	fi
 	# OpenSSL tools default to -L/usr/lib, the 32-bit directory on x86_64.
-	%make_build -C $i \
+	# MAKE_TOOL's first target is one object file. Without `all`, make
+	# compiles that file and exits 0, and install cannot find cert_create
+	# (znver1 679733).
+	%make_build -C $i all \
 		BUILD_PLAT="$top" \
 		$platarg \
 		FIPTOOL_LDFLAGS="-L%{_libdir} -lcrypto" \
